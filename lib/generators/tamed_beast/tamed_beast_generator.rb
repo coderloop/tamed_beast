@@ -1,8 +1,10 @@
 require 'rails/generators'
 require 'rails/generators/migration'
+require 'rails/generators/actions'
 
 class TamedBeastGenerator < Rails::Generators::Base
   include Rails::Generators::Migration
+  include Rails::Generators::Actions
 
   def self.source_root
     File.join(File.dirname(__FILE__), 'templates')
@@ -18,7 +20,21 @@ class TamedBeastGenerator < Rails::Generators::Base
     end
   end
 
+  def add__default_routes
+    route(File.read(File.join(File.dirname(__FILE__), 'templates/routes.rb') ), 'tamed_beast')
+  end
+
   def create_migration_file
     migration_template 'migration.rb', 'db/migrate/create_tamed_beast_tables.rb'
   end
-end
+
+  private
+  def route(routing_code, msg=nil)
+    log :route, msg || routing_code
+    sentinel = /\.routes\.draw do(?:\s*\|map\|)?\s*$/
+
+      in_root do
+      inject_into_file 'config/routes.rb', "\n  #{routing_code}\n", { :after => sentinel, :verbose => false }
+      end
+    end
+  end

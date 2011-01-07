@@ -12,7 +12,8 @@ Gem::Specification.new do |s|
   s.summary     = %q{Bullettin board for Rails}
   s.description = %q{Provides a simple bullettin board for Rails apps.}
 
-  s.add_dependency('rails', "~> 3.0.3")
+  s.add_dependency 'rails', "~> 3.0.3"
+  s.add_dependency 'will_paginate', "~> 3.0.beta"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
