@@ -9,19 +9,6 @@ class CreateTamedBeastTables < ActiveRecord::Migration
       t.text    "description_html"
     end
 
-    create_table "moderatorships" do |t|
-      t.integer "forum_id"
-      t.integer "user_id"
-    end
-
-    add_index "moderatorships", ["forum_id"], :name => "index_moderatorships_on_forum_id"
-
-    create_table "monitorships" do |t|
-      t.integer "topic_id"
-      t.integer "user_id"
-      t.boolean "active",   :default => true
-    end
-
     create_table "posts" do |t|
       t.integer  "user_id"
       t.integer  "topic_id"
@@ -65,7 +52,5 @@ class CreateTamedBeastTables < ActiveRecord::Migration
 
     drop_table :topics
     drop_table :posts
-    drop_table :monitorships
-    drop_table :moderatorships
     drop_table :forums
   end
