@@ -29,6 +29,8 @@ class TamedBeastGenerator < Rails::Generators::Base
   end
 
   private
+  # overrided from https://github.com/rails/rails/blob/master/railties/lib/rails/generators/actions.rb
+  # we need a custom message and omit our routes.rb content
   def route(routing_code, msg=nil)
     log :route, msg || routing_code
     sentinel = /\.routes\.draw do(?:\s*\|map\|)?\s*$/

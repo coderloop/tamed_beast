@@ -3,9 +3,7 @@ resources :posts, :name_prefix => 'all' do
 end
 resources :forums, :topics, :posts
 
-%w(forum).each do |attr|
-  resources :posts, :name_prefix => "#{attr}", :path_prefix => "/#{attr.pluralize}/:#{attr}_id"
-end
+resources :posts, :name_prefix => 'forum', :path_prefix => "/forums/:forum_id"
 
 resources :forums do
   resources :topics do
