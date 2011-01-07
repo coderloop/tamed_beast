@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :posts, :name_prefix => 'all' do
     get :search, :on => :collection
   end
-	resources :forums, :topics, :posts, :monitorship
+	resources :forums, :topics, :posts
 
   %w(forum).each do |attr|
     resources :posts, :name_prefix => "#{attr}", :path_prefix => "/#{attr.pluralize}/:#{attr}_id"
@@ -12,7 +12,6 @@ Rails.application.routes.draw do
   resources :forums do
     resources :topics do
       resources :posts
-      resource :monitorship, :controller => :monitorships
     end
   end
 end
