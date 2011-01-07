@@ -7,7 +7,7 @@ class ForumsController < ApplicationController
   #cache_sweeper :posts_sweeper, :only => [:create, :update, :destroy]
 
   def index
-    @forums = Forum.find_ordered
+    @forums = Forum.order('position')
     # reset the page of each forum we have visited when we go back to index
     session[:forum_page] = nil
     respond_to do |format|
