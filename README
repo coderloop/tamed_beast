@@ -1,0 +1,9 @@
+Welcome to Tamed Beast!
+
+Tamed beast is an attempt to tame savage_beast under Rails3. We worked with savage_beast under rails 2.x, but we find ourselves less than comfortable using it...
+And it came the day to migrate to Rails3 and - hey - how do we migrate savage_beast to Rails3? What about all our posts and forums?
+Damn.
+So we started writing our own bulletin board solution, trying to be compatible with the savage_beast data model.
+
+TODO:
+	* Add moderators / manage moderatorship roles
