@@ -35,7 +35,7 @@ class Topic < ActiveRecord::Base
   end
 
   def editable_by?(user)
-    user && (user.id == user_id || user.admin? || user.moderator_of?(forum_id))
+    user && (user.id == user_id) 
   end
   
   def update_cached_post_fields(post)

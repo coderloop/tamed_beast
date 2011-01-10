@@ -1,3 +1,6 @@
 module TamedBeast
-  require 'tamed_beast/engine' if defined?(Rails)
+  if defined? Rails
+    require 'tamed_beast/engine'
+    require 'tamed_beast/auth'
+  end
 end

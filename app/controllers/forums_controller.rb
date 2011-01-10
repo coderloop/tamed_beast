@@ -58,6 +58,4 @@ class ForumsController < ApplicationController
     def find_or_initialize_forum
       @forum = params[:id] ? Forum.find(params[:id]) : Forum.new
     end
-
-    #alias authorized? admin?
 end
