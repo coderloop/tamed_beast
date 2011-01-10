@@ -4,7 +4,6 @@ class ForumsController < ApplicationController
   before_filter :find_or_initialize_forum, :except => :index
 	
   #before_filter :admin?, :except => [:show, :index]
-  #cache_sweeper :posts_sweeper, :only => [:create, :update, :destroy]
 
   def index
     @forums = Forum.order('position')
@@ -20,7 +19,7 @@ class ForumsController < ApplicationController
     respond_to do |format|
       format.html do
         # keep track of when we last viewed this forum for activity indicators
-        (session[:forums] ||= {})[@forum.id] = Time.now.utc if logged_in?
+        (session[:forums] ||= {})[@forum.id] = Time.now.utc if !current_user.nil?
         (session[:forum_page] ||= Hash.new(1))[@forum.id] = params[:page].to_i if params[:page]
 
         @topics = @forum.topics.paginate :page => params[:page]

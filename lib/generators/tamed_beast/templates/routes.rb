@@ -1,6 +1,6 @@
-resources :posts, :name_prefix => 'all' do
-  get :search, :on => :collection
-end
+#resources :posts, :name_prefix => 'all' do
+  #get :search, :on => :collection
+#end
 resources :forums, :topics, :posts
 
 resources :posts, :name_prefix => 'forum', :path_prefix => "/forums/:forum_id"

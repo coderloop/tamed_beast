@@ -3,29 +3,17 @@ class PostsController < ApplicationController
   before_filter :login_required, :except => [:index, :search, :show]
   @@query_options = { :select => "#{Post.table_name}.*, #{Topic.table_name}.title as topic_title, #{Forum.table_name}.name as forum_name", :joins => "inner join #{Topic.table_name} on #{Post.table_name}.topic_id = #{Topic.table_name}.id inner join #{Forum.table_name} on #{Topic.table_name}.forum_id = #{Forum.table_name}.id" }
 
-	# @WBH@ TODO: This uses the caches_formatted_page method.  In the main Beast project, this is implemented via a Config/Initializer file.  Not
-	# sure what analogous place to put it in this plugin.  It don't work in the init.rb
-  #caches_formatted_page :rss, :index, :monitored
-  #cache_sweeper :posts_sweeper, :only => [:create, :update, :destroy]
-
   def index
-    conditions = []
-    [:user_id, :forum_id, :topic_id].each { |attr| conditions << Post.send(:sanitize_sql, ["#{Post.table_name}.#{attr} = ?", params[attr]]) if params[attr] }
-    conditions = conditions.empty? ? nil : conditions.collect { |c| "(#{c})" }.join(' AND ')
-    @posts = Post.paginate @@query_options.merge(:conditions => conditions, :page => params[:page], :count => {:select => "#{Post.table_name}.id"}, :order => post_order)
-    @users = User.find(:all, :select => 'distinct *', :conditions => ['id in (?)', @posts.collect(&:user_id).uniq]).index_by(&:id)
-    render_posts_or_xml
+    #conditions = []
+    #[:user_id, :forum_id, :topic_id].each { |attr| conditions << Post.send(:sanitize_sql, ["#{Post.table_name}.#{attr} = ?", params[attr]]) if params[attr] }
+    #conditions = conditions.empty? ? nil : conditions.collect { |c| "(#{c})" }.join(' AND ')
+    #@posts = Post.paginate @@query_options.merge(:conditions => conditions, :page => params[:page], :count => {:select => "#{Post.table_name}.id"}, :order => post_order)
+    #@users = User.find(:all, :select => 'distinct *', :conditions => ['id in (?)', @posts.collect(&:user_id).uniq]).index_by(&:id)
+    #render_posts_or_xml
 
-    @posts = Post.joins(:topics, :forums).order('created_at desc').paginate(:page => params[:page], :count => {:select => "#{Post.table_name}.id"})
+    @posts = Post.joins(:topics, :forums).order('created_at desc').paginate(:page => params[:page])
   end
 
-  def search		
-    conditions = params[:q].blank? ? nil : Post.send(:sanitize_sql, ["LOWER(#{Post.table_name}.body) LIKE ?", "%#{params[:q]}%"])
-    @posts = Post.paginate @@query_options.merge(:conditions => conditions, :page => params[:page], :count => {:select => "#{Post.table_name}.id"}, :order => post_order)
-    @users = User.find(:all, :select => 'distinct *', :conditions => ['id in (?)', @posts.collect(&:user_id).uniq]).index_by(&:id)
-    render_posts_or_xml :index
-  end
-  
   def show
     respond_to do |format|
       format.html { redirect_to forum_topic_path(@post.forum_id, @post.topic_id) }
@@ -64,17 +52,15 @@ class PostsController < ApplicationController
       format.html do
         redirect_to forum_topic_path(:forum_id => params[:forum_id], :id => params[:topic_id], :anchor => 'reply-form', :page => params[:page] || '1')
       end
-      format.xml { render :xml => @post.errors.to_xml, :status => 400 }
     end
   end
-  
+
   def edit
     respond_to do |format| 
       format.html
-      format.js
     end
   end
-  
+
   def update
     @post.attributes = params[:post]
     @post.save!
@@ -85,7 +71,6 @@ class PostsController < ApplicationController
       format.html do
         redirect_to forum_topic_path(:forum_id => params[:forum_id], :id => params[:topic_id], :anchor => @post.dom_id, :page => params[:page] || '1')
       end
-      format.js
       format.xml { head 200 }
     end
   end
@@ -96,42 +81,34 @@ class PostsController < ApplicationController
     respond_to do |format|
       format.html do
         redirect_to(@post.topic.frozen? ? 
-          forum_path(params[:forum_id]) :
-          forum_topic_path(:forum_id => params[:forum_id], :id => params[:topic_id], :page => params[:page]))
+                    forum_path(params[:forum_id]) :
+                    forum_topic_path(:forum_id => params[:forum_id], :id => params[:topic_id], :page => params[:page]))
       end
       format.xml { head 200 }
     end
   end
 
   protected
-    def authorized?
-      action_name == 'create' || @post.editable_by?(current_user)
-    end
-    
-    def post_order
-      "#{Post.table_name}.created_at#{params[:forum_id] && params[:topic_id] ? nil : " desc"}"
-    end
-    
-    def find_post			
-			@post = Post.find_by_id_and_topic_id_and_forum_id(params[:id], params[:topic_id], params[:forum_id]) || raise(ActiveRecord::RecordNotFound)
-    end
-    
-    def render_posts_or_xml(template_name = action_name)
-      respond_to do |format|
-        format.html { render :action => template_name }
-        format.rss  { render :action => template_name, :layout => false }
-        format.xml  { render :xml => @posts.to_xml }
-      end
-    end
+  def authorized?
+    action_name == 'create' || @post.editable_by?(current_user)
+  end
 
-    def email_users_in_topic(topic)
-      sent = []
-      topic.posts.find(:all, :conditions => ["user_id <> ?", current_user.id]).each do |post|
-        unless sent.include?(post.user.id)
-          UserMailer.send_later(:deliver_forum_notification, post.user, topic) if post.user.notify_forum?
-          sent << post.user_id
-        end 
-      end
-      UserMailer.send_later(:deliver_forum_notification_admin, topic)
+  def post_order
+    "#{Post.table_name}.created_at#{params[:forum_id] && params[:topic_id] ? nil : " desc"}"
+  end
+
+  def find_post			
+    @post = Post.find_by_id_and_topic_id_and_forum_id(params[:id], params[:topic_id], params[:forum_id]) || raise(ActiveRecord::RecordNotFound)
+  end
+
+  def email_users_in_topic(topic)
+    sent = []
+    topic.posts.find(:all, :conditions => ["user_id <> ?", current_user.id]).each do |post|
+      unless sent.include?(post.user.id)
+        UserMailer.send_later(:deliver_forum_notification, post.user, topic) if post.user.notify_forum?
+        sent << post.user_id
+      end 
     end
+    UserMailer.send_later(:deliver_forum_notification_admin, topic)
+  end
 end
