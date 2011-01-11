@@ -3,7 +3,7 @@
 #end
 resources :forums, :topics, :posts
 
-resources :posts, :name_prefix => 'forum', :path_prefix => "/forums/:forum_id"
+resources :posts, :as => 'forum', :path_prefix => "/forums/:forum_id"
 
 resources :forums do
   resources :topics do

@@ -54,3 +54,4 @@ class CreateTamedBeastTables < ActiveRecord::Migration
     drop_table :posts
     drop_table :forums
   end
+end
