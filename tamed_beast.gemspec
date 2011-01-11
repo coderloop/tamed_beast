@@ -14,6 +14,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rails', "~> 3.0.3"
   s.add_dependency 'will_paginate', "~> 3.0.beta"
+  s.add_dependency 'acts_as_list'
+
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

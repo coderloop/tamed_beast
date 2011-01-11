@@ -21,11 +21,20 @@ class TamedBeastGenerator < Rails::Generators::Base
   end
 
   def add__default_routes
-    route(File.read(File.join(File.dirname(__FILE__), 'templates/routes.rb') ), 'tamed_beast')
+    route(File.read(File.join(File.dirname(__FILE__), 'templates/routes.rb') ), "config/routes.rb")
   end
 
   def create_migration_file
     migration_template 'migration.rb', 'db/migrate/create_tamed_beast_tables.rb'
+  end
+
+  def copy_plugins
+    from = File.join(File.dirname(__FILE__), '../../../vendor/plugins/')
+    to = File.join(Rails.root, 'vendor/plugins/')
+    log :plugin, "vendor/plugins/white_list"
+    FileUtils.cp_r((File.join(from, 'white_list')), to)
+    log :plugin, "vendor/plugins/white_list_formatted_content"
+    FileUtils.cp_r((File.join(from, 'white_list_formatted_content')), to)
   end
 
   private
