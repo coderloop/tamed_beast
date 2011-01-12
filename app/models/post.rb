@@ -10,7 +10,7 @@ class Post < ActiveRecord::Base
   after_create  :update_cached_fields
   after_destroy :update_cached_fields
 
-  validates_presence_of :user_id, :body, :topic
+  validates_presence_of :user_id, :body, :topic_id
   attr_accessible :body	
 	
   def editable_by?(user)

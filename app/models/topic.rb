@@ -1,5 +1,5 @@
 class Topic < ActiveRecord::Base
-  validates_presence_of :forum, :user, :title
+  validates_presence_of :forum_id, :user_id, :title
   before_create  :set_default_replied_at_and_sticky
   before_update  :check_for_changing_forums
   after_save     :update_forum_counter_cache
@@ -17,18 +17,23 @@ class Topic < ActiveRecord::Base
   belongs_to :replied_by_user, :foreign_key => "replied_by", :class_name => "User"
 
   attr_accessible :title
-  # to help with the create form
   attr_accessor :body
 	
 	def hit!
     self.class.increment_counter :hits, id
   end
 
-  def sticky?() sticky == 1 end
+  def sticky?
+    sticky == 1
+  end
 
-  def views() hits end
+  def views
+    hits
+  end
 
-  def paged?() posts_count > Post.per_page end
+  def paged?
+    posts_count > Post.per_page
+  end
   
   def last_page
     [(posts_count.to_f / Post.per_page).ceil.to_i, 1].max
