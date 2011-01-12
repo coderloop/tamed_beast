@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
-  before_filter :find_post,      :except => [:index, :create, :search]
-  before_filter :login_required, :except => [:index, :search, :show]
-  @@query_options = { :select => "#{Post.table_name}.*, #{Topic.table_name}.title as topic_title, #{Forum.table_name}.name as forum_name", :joins => "inner join #{Topic.table_name} on #{Post.table_name}.topic_id = #{Topic.table_name}.id inner join #{Forum.table_name} on #{Topic.table_name}.forum_id = #{Forum.table_name}.id" }
+  before_filter :find_post,      :except => [:index, :create]
+  before_filter :login_required, :except => [:index, :show]
+  #@@query_options = { :select => "#{Post.table_name}.*, #{Topic.table_name}.title as topic_title, #{Forum.table_name}.name as forum_name", :joins => "inner join #{Topic.table_name} on #{Post.table_name}.topic_id = #{Topic.table_name}.id inner join #{Forum.table_name} on #{Topic.table_name}.forum_id = #{Forum.table_name}.id" }
 
   def index
     #conditions = []
@@ -11,7 +11,7 @@ class PostsController < ApplicationController
     #@users = User.find(:all, :select => 'distinct *', :conditions => ['id in (?)', @posts.collect(&:user_id).uniq]).index_by(&:id)
     #render_posts_or_xml
 
-    @posts = Post.joins(:topics, :forums).order('created_at desc').paginate(:page => params[:page])
+    #@posts = Post.where(:forum_id => params[:forum_id]).where(:topic_id => params[:topic_id]).order('created_at desc').paginate(:page => params[:page])
   end
 
   def show
