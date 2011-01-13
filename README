@@ -7,5 +7,6 @@ So we started writing our own bulletin board solution, trying to be compatible w
 
 TODO:
 	* Add moderators / manage moderatorship roles
+  * Add views
   * Add search feature
-  * Add tests
+  * Improve tests
