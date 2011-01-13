@@ -1,6 +1,6 @@
 class TopicsController < ApplicationController
   before_filter :find_forum_and_topic, :except => :index
-  before_filter :login_required #, :only => [:new, :create, :edit, :update, :destroy]
+  before_filter :login_required , :only => [:new, :create, :edit, :update, :destroy]
 
   def index
     respond_to do |format|
@@ -34,14 +34,12 @@ class TopicsController < ApplicationController
   end
 
   def create
-    topic_saved, post_saved = false, false
+    topic_save, post_save = false, false
    
     Topic.transaction do
       @topic  = Topic.new(:title => params[:topic][:title])
       @topic.forum_id = @forum.id
       assign_protected
-      topic_save = false
-      post_save = false
       if @topic.save
         topic_save = true
         @post       = Post.new(:body => params[:topic][:body])
@@ -53,7 +51,7 @@ class TopicsController < ApplicationController
       end
     end
 
-    if topic_saved && post_saved
+    if topic_save && post_save
       respond_to do |format| 
         format.html { redirect_to forum_topic_path(@forum, @topic) }
         format.xml  { head :created, :location => topic_url(:forum_id => @forum, :id => @topic, :format => :xml) }
@@ -75,7 +73,6 @@ class TopicsController < ApplicationController
 
   def destroy
     @topic.destroy
-    flash[:notice] = "Topic '{title}' was deleted."[:topic_deleted_message, @topic.title]
     respond_to do |format|
       format.html { redirect_to forum_path(@forum) }
       format.xml  { head 200 }

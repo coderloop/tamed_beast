@@ -1,0 +1,9 @@
+one:
+  id: 1
+  username: 'one'
+  email: 'one@example.com'
+
+two:
+  id: 2
+  username: 'two'
+  email: 'two@example.com'

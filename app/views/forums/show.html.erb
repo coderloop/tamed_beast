@@ -5,19 +5,6 @@
     <hr />
   <% end %>
 
-  <h5 style="margin-bottom:1.0em;"><%= 'Moderators'[:moderators] %></h5>
-
-  <% unless @forum.moderators.empty? -%>
-    <ul class="flat" style="margin-top:1em;">
-      <% @forum.moderators.each do |user| -%>
-        <li><%= link_to user.display_name, user_path(user) %></li>
-      <% end -%>
-    </ul>
-  <% else -%>
-    <p><%= 'This forum is currently unmoderated.'[:forum_is_unmoderated] %></p>
-    <p><%= 'Please always be courteous.'[:please_be_courteous] %></p>
-  <% end -%>
-
 <% end %>
 
 <% @page_title = @forum.name %>

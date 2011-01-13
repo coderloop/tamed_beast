@@ -23,18 +23,6 @@ class PostsController < ApplicationController
 
   def create
     @topic = Topic.find_by_id_and_forum_id(params[:topic_id],params[:forum_id])
-    if @topic.locked?
-      respond_to do |format|
-        format.html do
-          flash[:notice] = 'This topic is locked.'[:locked_topic]
-          redirect_to(forum_topic_path(:forum_id => params[:forum_id], :id => params[:topic_id]))
-        end
-        format.xml do
-          render :text => 'This topic is locked.'[:locked_topic], :status => 400
-        end
-      end
-      return
-    end
     @forum = @topic.forum
     @post  = @topic.posts.build(params[:post])
     @post.user = current_user
@@ -77,7 +65,7 @@ class PostsController < ApplicationController
 
   def destroy
     @post.destroy
-    flash[:notice] = "Post of '{title}' was deleted."[:post_deleted_message, @post.topic.title]
+    #flash[:notice] = "Post of '{title}' was deleted."[:post_deleted_message, @post.topic.title]
     respond_to do |format|
       format.html do
         redirect_to(@post.topic.frozen? ? 
