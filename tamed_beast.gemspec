@@ -8,9 +8,9 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Luca Bonmassar, Andrea Pavoni"]
   s.email       = ["info@coderloop.com"]
-  s.homepage    = ""
-  s.summary     = %q{Bullettin board for Rails}
-  s.description = %q{Provides a simple bullettin board for Rails apps.}
+  s.homepage    = "http://github.com/coderloop/tamed_beast"
+  s.summary     = %q{Bullettin board for Rails 3}
+  s.description = %q{Provides a simple bullettin board for Rails 3 apps.}
 
   s.add_dependency 'rails', "~> 3.0.3"
   s.add_dependency 'will_paginate', "~> 3.0.beta"

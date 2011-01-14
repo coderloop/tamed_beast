@@ -27,7 +27,6 @@ class PostsController < ApplicationController
     @post  = @topic.posts.build(params[:post])
     @post.user = current_user
     @post.save!
-    email_users_in_topic(@topic)
     respond_to do |format|
       format.html do
         redirect_to forum_topic_path(:forum_id => params[:forum_id], :id => params[:topic_id], :anchor => @post.dom_id, :page => params[:page] || '1')
@@ -65,7 +64,6 @@ class PostsController < ApplicationController
 
   def destroy
     @post.destroy
-    #flash[:notice] = "Post of '{title}' was deleted."[:post_deleted_message, @post.topic.title]
     respond_to do |format|
       format.html do
         redirect_to(@post.topic.frozen? ? 
@@ -83,16 +81,5 @@ class PostsController < ApplicationController
 
   def find_post			
     @post = Post.find_by_id_and_topic_id_and_forum_id(params[:id], params[:topic_id], params[:forum_id]) || raise(ActiveRecord::RecordNotFound)
-  end
-
-  def email_users_in_topic(topic)
-    sent = []
-    topic.posts.find(:all, :conditions => ["user_id <> ?", current_user.id]).each do |post|
-      unless sent.include?(post.user.id)
-        UserMailer.send_later(:deliver_forum_notification, post.user, topic) if post.user.notify_forum?
-        sent << post.user_id
-      end 
-    end
-    UserMailer.send_later(:deliver_forum_notification_admin, topic)
   end
 end

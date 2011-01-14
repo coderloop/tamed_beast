@@ -1,5 +1,7 @@
 class Post < ActiveRecord::Base
-  def self.per_page() 25 end
+  def self.per_page
+    25
+  end
 
   belongs_to :forum
   belongs_to :user
