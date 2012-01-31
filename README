@@ -6,7 +6,7 @@ Damn.
 So we started writing our own bulletin board solution, trying to be compatible with the savage_beast data model.
 
 TODO:
-	* Add moderators / manage moderatorship roles
+  * Add moderators / manage moderatorship roles
   * Add views
   * Add search feature
   * Improve tests
